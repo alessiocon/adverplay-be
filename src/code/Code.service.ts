@@ -12,16 +12,16 @@ import { User, UserSchema } from './../user/models/User.schema';
 @Injectable()
 export class CodeService {
   constructor(@InjectModel(Code.name) private _codeContext: Model<Code>,
-    @Inject(forwardRef(() => GeventService))
-    private _geventService: GeventService
+    @Inject(forwardRef(() => GeventService)) private _geventService: GeventService
   ) {}
   
   async Create(createCodeDto: CreateCodeReqDto) : Promise<ResFetch<string>>{
     let res : ResFetch<string> = {};
 
     let gevent = await this._geventService.FindById(createCodeDto.idGevent);
-    if(gevent.data?.staff?.includes(createCodeDto.idCreator)){
-     
+    if(gevent.data?.staff?.includes(createCodeDto.idCreator) || 
+      gevent.data?.master.includes(createCodeDto.idCreator)
+    ){
       let  createCode = new this._codeContext({
         code: this.GenerateCode(),
         ...createCodeDto

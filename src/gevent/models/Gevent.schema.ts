@@ -34,6 +34,10 @@ export class Gevent {
     @Prop({type: [SchemaTypes.ObjectId], default: [], ref: User.name})
     staff:  ObjectId[];
 
+    @Prop({type: [SchemaTypes.ObjectId], default: [], ref: User.name})
+    master:  ObjectId[];
+
+
     //capire sé è utile includerla
     // @Prop({type: [SchemaTypes.ObjectId], default: [], ref: Code.name})
     // codes: ObjectId[]

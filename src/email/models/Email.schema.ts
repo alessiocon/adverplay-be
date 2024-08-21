@@ -1,6 +1,6 @@
 import { Prop, SchemaFactory, Schema, } from '@nestjs/mongoose';
 import { HydratedDocument} from 'mongoose';
-import { EmailConfirmData, EmailTypeEnum, IEmailData } from './EmailModels';
+import { EmailData, EmailTypeEnum} from './EmailModels';
 
 export type EmailDocument = HydratedDocument<Email>;
 
@@ -10,7 +10,7 @@ export class Email{
     type: EmailTypeEnum ;
     
     @Prop()
-    data: EmailConfirmData;
+    data: EmailData;
 
     @Prop({default: new Date()})
     expireAt?: Date;

@@ -1,18 +1,27 @@
-import { Controller, Get, Post, Body, Param} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards} from '@nestjs/common';
 import { GeventService } from './Gevent.service';
 import { CreateGeventDto, CheckWinGEventDto } from './models/Gevent.dto';
 import { ResFetch } from './../models/Response.model';
 import { Gevent } from './models/Gevent.schema';
 import { Schema } from 'mongoose';
-import { ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiParam } from '@nestjs/swagger';
+import { JwtAuthGuard } from './../auth/passport/jwt-auth.guard';
+import { Roles } from './../decoretors/custom.decoretor';
+import { RolesGuard } from './../decoretors/roles.guard';
+import { AuthRoleEnum } from './../auth/models/Auth.dto';
 
 @Controller('gevent')
 export class GeventController {
   constructor(private readonly geventService: GeventService) {}
-
+  
   @Post()
+  @ApiBearerAuth("JWT-auth")
+  @UseGuards(RolesGuard)
+  @Roles([AuthRoleEnum.Admin])
+  @UseGuards(JwtAuthGuard)
   async Create(@Body() createGeventDto: CreateGeventDto) : Promise<ResFetch<boolean>> {
     let res : ResFetch<boolean> = {};
+
     let data = await this.geventService.Create(createGeventDto);
 
     res.data = data;

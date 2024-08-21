@@ -18,6 +18,7 @@ export class AuthLocalGameLoginOutDto {
 }
 
 export enum AuthRoleEnum {
+    Admin = "admin",
     Staff = "staff",
     Restaurateur = "restaurateur"
 }

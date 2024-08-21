@@ -31,6 +31,29 @@ export class ChangeUserPassDto {
     newPass: string;
 }
 
+export class ChangeUsernameDto {
+    @ApiProperty()
+    @Length(3,15, {message: ConstraintEnum.Length})
+    Username: string;
+}
+
+export class SendChangeEmailDto {
+    @ApiProperty()
+    @IsEmail({},{message: ConstraintEnum.IsEmail})
+    Email: string;
+}
+
+export class ChangeEmailDto {
+   password: string;
+   idMail: mongoose.Types.ObjectId;
+}
+
+export class ChangeOldPasswordDto {
+    password: string;
+    @Matches(/((?=.*\d)(?=.*[a-z])(?=.*[\W]){8,20})/, {message: ConstraintEnum.Marches})
+    newPassword: string;
+ }
+
 export class JwtUserDto {
     username: string;
     _id: mongoose.Types.ObjectId;

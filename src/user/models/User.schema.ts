@@ -18,6 +18,9 @@ export class User {
     @Prop({unique:true, maxlength: 15})
     username: string;
 
+    @Prop({default: null})
+    changeUsername?: Date;
+
     @Prop({unique:true})
     tel: number;
 

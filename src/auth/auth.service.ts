@@ -1,4 +1,4 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { UserService } from './../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { JwtUserDto } from './../user/models/User.dto';
@@ -12,7 +12,7 @@ const bcrypt = require('bcrypt');
 export class AuthService {
   private readonly logger = new Logger();
   constructor(
-    private _userService: UserService,
+    @Inject(forwardRef(() => UserService)) private _userService: UserService,
     private _jwtService: JwtService,
     @InjectModel(RFSession.name) private _RFSessionContext: Model<RFSession>
   ) {}
@@ -53,10 +53,10 @@ export class AuthService {
   async login(payload: JwtUserDto) : Promise<string> {
     let jwtToken = await this._jwtService.signAsync(payload);
     this.logger.log(`find and delete from RFSession idUser: ${payload._id}`);
-    await this._RFSessionContext.findOneAndDelete({idUser: payload._id});
+    await this._RFSessionContext.findOneAndDelete({idUser: new mongo.ObjectId(payload._id.toString()) });
     
     await new this._RFSessionContext({
-      idUser: payload._id,
+      idUser: new mongo.ObjectId(payload._id.toString()),
       round: 0
     }).save();
     this.logger.log(`save in RFSession idUser: ${payload._id}`);
@@ -98,7 +98,7 @@ export class AuthService {
   async logout(userid: mongoose.Types.ObjectId){
     let response : ResFetch<boolean> = {};
 
-    await this._RFSessionContext.findOneAndDelete({idUser: new mongoose.Types.ObjectId(userid)});
+    await this._RFSessionContext.findOneAndDelete({idUser: userid});
     response.data = true;
     return response;
   }

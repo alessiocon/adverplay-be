@@ -1,10 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Length } from "class-validator";
+import { Length , Max, Min} from "class-validator";
 import mongoose, { ObjectId, Schema } from "mongoose";
 import { ConstraintEnum } from "./../../models/ConstraintEnum.model";
 
 export class CreateCodeReqDto {
+    @Min(0, {message: ConstraintEnum.Min})
+    @Max(15, {message: ConstraintEnum.Max})
     maxTry: number|undefined;
+
     idGevent: mongoose.Types.ObjectId;
 
     @ApiProperty({required:false})

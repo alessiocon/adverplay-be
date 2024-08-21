@@ -14,8 +14,8 @@ export class GeventService {
   constructor(
     @InjectModel(Gevent.name) private _geventContext: Model<Gevent>,
     @InjectModel(Code.name) private _codeContext: Model<Code>,
-    @Inject(forwardRef(() => CodeService))
-    private _codeService: CodeService
+    @Inject(forwardRef(() => CodeService)) private _codeService: CodeService
+   
   ) {}
 
   async FindAll() : Promise<[Gevent]> {

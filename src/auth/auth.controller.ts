@@ -63,6 +63,4 @@ export class AuthController {
      
     return resFetch;
   }
-
-
  }

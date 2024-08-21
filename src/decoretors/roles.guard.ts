@@ -18,7 +18,6 @@ export class RolesGuard implements CanActivate {
         const request = context.switchToHttp().getRequest() as Request;
         const user = request.user as JwtUserDto; 
         if (!user) {throw new UnauthorizedException("Permesso negato")}
-        
         if (user.role.find(r => roles.find(c => c == r))){
             return true;
         }
