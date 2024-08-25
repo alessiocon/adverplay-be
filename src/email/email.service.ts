@@ -18,19 +18,16 @@ export class EmailService{
     constructor(
       @InjectModel(Email.name) private _emailContext: Model<Email>,
     ){
-        //create transporter
         this.#trensporter = nodemail.createTransport({
-            service: process.env.NODEMAILER_SERVICE,
             host: process.env.NODEMAILER_HOST,
-            secure: process.env.NODEMAILER_PORT === "465",
-            tls: {
-                ciphers: "SSLv3",
-                rejectUnauthorized: false,
-              },
+            port: process.env.NODEMAILER_PORT,
+            secure: process.env.NODEMAILER_SECURE ?? false,
+            requireTLS: process.env.NODEMAILER_REQUIRETLS,
             auth: {
-                user: process.env.NODEMAILER_EMAIL, 
+                user: process.env.NODEMAILER_USERNAME, 
                 pass:  process.env.NODEMAILER_PASSWORD, 
               },
+            logger: process.env.NODEMAILER_LOGGER
         })
     }
     
@@ -189,7 +186,7 @@ export class EmailService{
             response.data = true;
         }catch(e){
             this.logger.error(`sending an email to ${mail.to} Failed \n ${e}`);
-            response.error = {general: "errore nell\' invio dell\' email"}
+            response.error = {general: "errore nell\' invio della mail"}
         }
 
         return response;
