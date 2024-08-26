@@ -27,7 +27,6 @@ export class EmailService{
                 user: process.env.NODEMAILER_USERNAME, 
                 pass:  process.env.NODEMAILER_PASSWORD, 
               },
-            logger: process.env.NODEMAILER_LOGGER
         })
     }
     
