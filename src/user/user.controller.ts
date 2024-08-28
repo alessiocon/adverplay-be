@@ -31,7 +31,12 @@ export class UserController {
 
     let resJwt = await this.userService.ChangeUsername(data.Username, req.user as JwtUserDto)
     if(!resJwt.error){
-      res.cookie('Jwt_User' ,'Bearer ' + resJwt.data, { sameSite: "Lax"});
+      res.cookie('Jwt_User' ,'Bearer ' + resJwt.data, { 
+        sameSite: "Lax", 
+        secure: process.env.NODE_ENV !== "development",
+        domain: process.env.NODE_ENV !== "development" ? process.env.CLIENTDOMAIN  : "/"
+      });
+      
       response.data = true;
     }else{
       response.error = resJwt.error;
@@ -62,7 +67,12 @@ export class UserController {
   async sendChangEmail(@Body() data: SendChangeEmailDto, @Req() req, @Res({passthrough:true}) res) : Promise<ResFetch<boolean>>{
     let response = await this.userService.SendChangeEmail(data.Email, req.user as JwtUserDto);
     if(response.data){
-      res.cookie('Jwt_User' ,'', {expires: new Date() });
+      res.cookie('Jwt_User' ,'', { 
+        sameSite: "Lax", 
+        secure: process.env.NODE_ENV !== "development",
+        domain: process.env.NODE_ENV !== "development" ? process.env.CLIENTDOMAIN  : "/",
+        expires: new Date()
+      });
     }
     return response;
   }

@@ -22,7 +22,11 @@ export class AuthController {
       resFetch.error = userVal.error;
     }else{
       let token = await this.authService.login(userVal.data);
-      res.cookie('Jwt_User' ,'Bearer ' + token, { sameSite: "Lax"});
+      res.cookie('Jwt_User' ,'Bearer ' + token, { 
+        sameSite: "Lax", 
+        secure: process.env.NODE_ENV !== "development",
+        domain: process.env.NODE_ENV !== "development" ? process.env.CLIENTDOMAIN  : "/"
+      });
 
       resFetch.data = true;
     }
@@ -57,7 +61,12 @@ export class AuthController {
     const user : JwtUserDto = req.user;
 
     await this.authService.logout( user._id );
-    res.cookie('Jwt_User' ,'', {expires: new Date() });
+    res.cookie('Jwt_User' ,'', { 
+      sameSite: "Lax", 
+      secure: process.env.NODE_ENV !== "development",
+      domain: process.env.NODE_ENV !== "development" ? process.env.CLIENTDOMAIN  : "/",
+      expires: new Date()
+    });
 
     resFetch.data = true;
      

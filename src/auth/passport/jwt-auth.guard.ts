@@ -17,7 +17,13 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   handleRequest(err, user, info, ctx) {
     let res = ctx.getResponse();
     if (err || !user) {
-      res.cookie('Jwt_User' ,'', { expires: new Date()});
+      res.cookie('Jwt_User' ,'', { 
+        sameSite: "Lax", 
+        secure: process.env.NODE_ENV !== "development",
+        domain: process.env.NODE_ENV !== "development" ? process.env.CLIENTDOMAIN  : "/",
+        expires: new Date()
+      });
+
       throw err || new UnauthorizedException({
         general: "accedi per continuare",
         customObject: true
@@ -25,7 +31,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     if(user.newJwt){
-      res.cookie('Jwt_User' ,'Bearer ' + user.newJwt);
+      res.cookie('Jwt_User' ,'Bearer ' + user.newJwt, { 
+        sameSite: "Lax", 
+        secure: process.env.NODE_ENV !== "development",
+        domain: process.env.NODE_ENV !== "development" ? process.env.CLIENTDOMAIN  : "/"
+      });
     }
 
     let {newJwt, ...dataUser} = user
