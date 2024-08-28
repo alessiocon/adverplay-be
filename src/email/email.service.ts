@@ -18,11 +18,16 @@ export class EmailService{
     constructor(
       @InjectModel(Email.name) private _emailContext: Model<Email>,
     ){
+
+
         this.#trensporter = nodemail.createTransport({
             host: process.env.NODEMAILER_HOST,
             port: process.env.NODEMAILER_PORT,
-            secure: process.env.NODEMAILER_SECURE ?? false,
-            requireTLS: process.env.NODEMAILER_REQUIRETLS,
+            secure: process.env.NODEMAILER_PORT === "465",
+            tls: {
+                ciphers: "SSLv3",
+                rejectUnauthorized: false,
+              },
             auth: {
                 user: process.env.NODEMAILER_USERNAME, 
                 pass:  process.env.NODEMAILER_PASSWORD, 
@@ -33,7 +38,7 @@ export class EmailService{
     async sendMail (mail : MailOptions){
         // crea l'oggetto da trasportare
         let mailObj = {
-            from: `"${mail.from}" <${process.env.NODEMAILER_EMAIL}>`, // sender address
+            from: `"${mail.from}" <${process.env.NODEMAILER_USERNAME}>`, // sender address
             to: `${mail.to}`, //list of receivers 
             subject: mail.subject, // Subject line
             text: mail.text, // plain text body
@@ -61,7 +66,7 @@ export class EmailService{
         this.logger.log(`save email with userId ${userId} and type ${EmailTypeEnum.EmailConfirm}`);
 
         let mailObj = {
-            from: `"${process.env.NODEMAILER_EMAIL}" <${process.env.NODEMAILER_EMAIL}>`, // sender address
+            from: `"${process.env.NODEMAILER_USERNAME}" <${process.env.NODEMAILER_USERNAME}>`, // sender address
             to: `${to}`, //list of receivers 
             subject: "AdverPlayer conferma email", // Subject line
             html: `<div style={{textAlign:"center"}}>
@@ -95,7 +100,7 @@ export class EmailService{
         this.logger.log(`save email with userId ${userId} and type ${EmailTypeEnum.EmailChange}`);
 
         let mailObj = {
-            from: `"${process.env.NODEMAILER_EMAIL}" <${process.env.NODEMAILER_EMAIL}>`, // sender address
+            from: `"${process.env.NODEMAILER_USERNAME}" <${process.env.NODEMAILER_USERNAME}>`, // sender address
             to: `${to}`, //list of receivers 
             subject: "AdverPlayer richiesta cambio email", // Subject line
             html: `<div style={{textAlign:"center"}}>
@@ -124,7 +129,7 @@ export class EmailService{
         await email.save();
 
         let mailObj = {
-            from: `"${process.env.NODEMAILER_EMAIL}" <${process.env.NODEMAILER_EMAIL}>`, // sender address
+            from: `"${process.env.NODEMAILER_USERNAME}" <${process.env.NODEMAILER_USERNAME}>`, // sender address
             to: `${to}`, //list of receivers 
             subject: "Richiesta cambio password", // Subject line
             html: `<h1>Richiesta cambio password</h1><p>abbiamo ricevuto una richiesta di cambio password, <a title="cambia password" 
