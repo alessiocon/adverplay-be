@@ -34,7 +34,7 @@ export class UserController {
       res.cookie('Jwt_User' ,'Bearer ' + resJwt.data, { 
         sameSite: "Lax", 
         secure: process.env.NODE_ENV !== "development",
-        domain: process.env.NODE_ENV !== "development" ? process.env.CLIENTDOMAIN  : "/"
+        domain: process.env.NODE_ENV !== "development" && process.env.CLIENTDOMAIN 
       });
       
       response.data = true;
@@ -70,7 +70,7 @@ export class UserController {
       res.cookie('Jwt_User' ,'', { 
         sameSite: "Lax", 
         secure: process.env.NODE_ENV !== "development",
-        domain: process.env.NODE_ENV !== "development" ? process.env.CLIENTDOMAIN  : "/",
+        domain: process.env.NODE_ENV !== "development" && process.env.CLIENTDOMAIN ,
         expires: new Date()
       });
     }

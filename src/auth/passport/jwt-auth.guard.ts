@@ -20,7 +20,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       res.cookie('Jwt_User' ,'', { 
         sameSite: "Lax", 
         secure: process.env.NODE_ENV !== "development",
-        domain: process.env.NODE_ENV !== "development" ? process.env.CLIENTDOMAIN  : "/",
+        domain: process.env.NODE_ENV !== "development" && process.env.CLIENTDOMAIN ,
         expires: new Date()
       });
 
@@ -34,7 +34,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       res.cookie('Jwt_User' ,'Bearer ' + user.newJwt, { 
         sameSite: "Lax", 
         secure: process.env.NODE_ENV !== "development",
-        domain: process.env.NODE_ENV !== "development" ? process.env.CLIENTDOMAIN  : "/"
+        domain: process.env.NODE_ENV !== "development" && process.env.CLIENTDOMAIN 
       });
     }
 

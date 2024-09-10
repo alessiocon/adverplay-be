@@ -25,7 +25,7 @@ export class AuthController {
       res.cookie('Jwt_User' ,'Bearer ' + token, { 
         sameSite: "Lax", 
         secure: process.env.NODE_ENV !== "development",
-        domain: process.env.NODE_ENV !== "development" ? process.env.CLIENTDOMAIN  : "/"
+        domain: process.env.NODE_ENV !== "development" && process.env.CLIENTDOMAIN 
       });
 
       resFetch.data = true;
@@ -64,7 +64,7 @@ export class AuthController {
     res.cookie('Jwt_User' ,'', { 
       sameSite: "Lax", 
       secure: process.env.NODE_ENV !== "development",
-      domain: process.env.NODE_ENV !== "development" ? process.env.CLIENTDOMAIN  : "/",
+      domain: process.env.NODE_ENV !== "development" && process.env.CLIENTDOMAIN,
       expires: new Date()
     });
 
