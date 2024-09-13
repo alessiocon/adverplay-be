@@ -9,9 +9,9 @@ export class MatchController {
   constructor(private readonly matchService: MatchService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   create(@Body() createMatchDto: CreateMatchDto, @Req() req) : Promise<ResFetch<string>>{
-    var createMatch : CreateMatch = {...createMatchDto, idUser: req.user._id};
+    var createMatch : CreateMatch = {...createMatchDto/*, idUser: req.user._id*/};
 
     return this.matchService.Create(createMatch);
   }

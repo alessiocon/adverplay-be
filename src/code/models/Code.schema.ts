@@ -29,8 +29,8 @@ export class Code {
     idCreator: ObjectId;
 
     @Prop({default: Date.now()})
-    createdAt: Date
-    
+    createdAt: Date;
+ 
 }
 
-export const CodeSchema = SchemaFactory.createForClass(Code);
+export const CodeSchema = SchemaFactory.createForClass(Code).index({createdAt: 1},{name: "expireAt", expireAfterSeconds: 60*60*12 /* 12 ore */})

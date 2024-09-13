@@ -19,7 +19,7 @@ export class AddCodeResDto {
     code: string;
     try: number;
     maxTry: number;
-    idPlayer: string;
+    //idPlayer: string;
     scoreToWin: number;
 }
 

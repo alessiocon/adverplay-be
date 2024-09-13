@@ -29,7 +29,7 @@ export class Match {
     idGevent: ObjectId;
 
     @Prop({type: SchemaTypes.ObjectId, ref: User.name, required:true})
-    idUser: ObjectId;
+    idUser: ObjectId | null;
 }
 
 export const MatchSchema = SchemaFactory.createForClass(Match);

@@ -26,10 +26,10 @@ export class CodeController {
   }
 
   @Post("assign")
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   async AssignCode(@Req() req,  @Body() data: CodeAssignDto) : Promise<ResFetch<AddCodeResDto>> {
 
-    return await this.codeService.AssignCode(data.code, req.user as JwtUserDto);
+    return await this.codeService.AssignCode(data.code/*, req.user as JwtUserDto*/);
   }
 
   @ApiParam({name:"id", type: "string"})

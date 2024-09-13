@@ -33,25 +33,25 @@ export class AuthController {
     return resFetch;
   }
 
-  @Post('localgame')
-  async authLocalGame( @Res({passthrough:true}) res, @Body() credentials: AuthLocalLoginDto) : Promise<ResFetch<AuthLocalGameLoginOutDto>>
-  { 
-    const resFetch : ResFetch<AuthLocalGameLoginOutDto> = {} ;
-    let userVal = await this.authService.validateUser(credentials.email, credentials.pass);
+  // @Post('localgame')
+  // async authLocalGame( @Res({passthrough:true}) res, @Body() credentials: AuthLocalLoginDto) : Promise<ResFetch<AuthLocalGameLoginOutDto>>
+  // { 
+  //   const resFetch : ResFetch<AuthLocalGameLoginOutDto> = {} ;
+  //   let userVal = await this.authService.validateUser(credentials.email, credentials.pass);
     
-    if(userVal.error){
-      resFetch.error = userVal.error;
-      return resFetch;
-    }
+  //   if(userVal.error){
+  //     resFetch.error = userVal.error;
+  //     return resFetch;
+  //   }
 
-    let token = await this.authService.login(userVal.data);
+  //   let token = await this.authService.login(userVal.data);
 
-    resFetch.data = {
-      jwt:'Bearer ' + token,
-      username: userVal.data.username,
-    }
-    return resFetch;
-  }
+  //   resFetch.data = {
+  //     jwt:'Bearer ' + token,
+  //     username: userVal.data.username,
+  //   }
+  //   return resFetch;
+  // }
 
   @Get('logout')
   @UseGuards(JwtAuthGuard)
