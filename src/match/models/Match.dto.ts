@@ -2,10 +2,12 @@ import { ApiProperty, PartialType } from "@nestjs/swagger";
 import mongoose, { ObjectId, Schema } from "mongoose";
 
 export class CreateMatchDto {
-    @ApiProperty({required: true})
-    idCode: mongoose.Types.ObjectId;
+    @ApiProperty({required: false})
+    idCode: mongoose.Types.ObjectId | undefined;
     @ApiProperty({required: true})
     idGevent: mongoose.Types.ObjectId;
+    @ApiProperty({required:false})
+    tryFA: number | undefined
 }
 
 export class CreateMatch extends CreateMatchDto {

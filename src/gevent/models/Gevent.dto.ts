@@ -32,6 +32,18 @@ export class CreateGeventDto {
 
     @ApiProperty({default: 100})
     scoreToWin: number;
+
+    @ApiProperty({default: 10})
+    maxTry: number;
+
+    @ApiProperty({default: false})
+    FA: boolean;
+}
+
+export class CheckFreeAccessDto {
+    FA: boolean;
+    scoreToWin: number;
+    maxTry: number;
 }
 
 export class UpdateGEventDto extends PartialType(CreateGeventDto) {}

@@ -30,6 +30,12 @@ export class Gevent {
 
     @Prop({default:100})
     scoreToWin: number;
+    
+    @Prop({default: 10})
+    maxTry: number;
+
+    @Prop({default: false})
+    FA: boolean;
 
     @Prop({type: [SchemaTypes.ObjectId], default: [], ref: User.name})
     staff:  ObjectId[];

@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
-import { CreateGeventDto } from './models/Gevent.dto';
+import { CheckFreeAccessDto, CreateGeventDto } from './models/Gevent.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Gevent } from './models/Gevent.schema';
 import mongoose, { Model, ObjectId, Schema } from 'mongoose';
@@ -83,6 +83,23 @@ export class GeventService {
     let {_id, ...geventData} = gevent;
     
     await this._geventContext.findOneAndUpdate({_id}, geventData);
+    return res;
+  }
+
+  async CheckFreeAccess(id : Schema.Types.ObjectId) : Promise<ResFetch<CheckFreeAccessDto>> {
+    let res : ResFetch<CheckFreeAccessDto> = {};
+    
+    let gevent = await this._geventContext.findById(id);
+    if(!gevent){
+      throw new BadRequestException("Event not found");
+    }
+
+    res.data = {
+      FA: gevent.FA,
+      maxTry: gevent.maxTry,
+      scoreToWin: gevent.scoreToWin
+    }
+
     return res;
   } 
 
