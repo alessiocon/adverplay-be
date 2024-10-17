@@ -14,5 +14,4 @@ export class RFSession{
     @Prop({default: new Date()})
     expireAt?: Date;
 }
-
-export const RFSessionSchema = SchemaFactory.createForClass(RFSession).index({expireAt: 1},{expireAfterSeconds: 60*24*7 /* 7 days */});
+export const RFSessionSchema = SchemaFactory.createForClass(RFSession).index({expireAt: 1},{expireAfterSeconds: 60*60*24*7 /* 7 days */});

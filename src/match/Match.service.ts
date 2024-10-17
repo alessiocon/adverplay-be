@@ -59,20 +59,19 @@ export class MatchService {
     gameTry += 1;
     gevent.data.runGame += 1;
 
-
     if(!gevent.data.FA){ 
       code.data.try = gameTry;
       await this._codeService.Update(code.data);
     }
     await this._geventService.Update(gevent.data);
 
-
-    let createMatchDb = new this._matchContext({
+    /*dato che l'utente non avrà l'accesso , il sistema match è sospeso*/
+    /*let createMatchDb = new this._matchContext({
       codeTry: gameTry,
       ...createMatch
     });
-    await createMatchDb.save(); 
-    res.data = ""+createMatchDb._id
+    await createMatchDb.save(); */
+    res.data = "start play"//""+createMatchDb._id
     return res;
   }
 

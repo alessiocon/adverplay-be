@@ -60,7 +60,7 @@ export class CodeService {
     return res;
   } 
 
-  async AssignCode(code: string, user: JwtUserDto) : Promise<ResFetch<AddCodeResDto>>{
+  async AssignCode(code: string/*, user: JwtUserDto*/) : Promise<ResFetch<AddCodeResDto>>{
     let res : ResFetch<AddCodeResDto> = {};
     let codeDb = await this._codeContext.findOne({code: code})
       .populate<{"idGevent": Gevent}>(CodeSchema.paths.idGevent.path, GeventSchema.paths.scoreToWin.path);
@@ -71,15 +71,14 @@ export class CodeService {
         game: "codice non trovato"
       }
 
-    
-    }else if(codeDb.idPlayer !== null && codeDb.idPlayer.toString() !== user._id.toString()){
+    }/*else if(codeDb.idPlayer !== null && codeDb.idPlayer.toString() !== user._id.toString()){
       res.error = {
         code: "codice già in uso",
         game:"codice già in uso"
       }
 
-    }else{
-      codeDb.idPlayer = user._id;
+    }*/else{
+      codeDb.idPlayer = null;
       await codeDb.save();
 
       let codeRes : AddCodeResDto = {
@@ -87,7 +86,7 @@ export class CodeService {
         code: codeDb.code,
         try: codeDb.try,
         maxTry: codeDb.maxTry,
-        idPlayer: codeDb.idPlayer.toString(),
+        //idPlayer: codeDb.idPlayer.toString(),
         scoreToWin: codeDb.idGevent.scoreToWin
       }
 
@@ -99,31 +98,31 @@ export class CodeService {
 
   async GetCodeById(codeId: mongoose.Types.ObjectId) : Promise<ResFetch<GetCodeDto>>{
     let res : ResFetch<GetCodeDto> = {};
+
     
     let codeDb = await  this._codeContext.findById( codeId )
       .populate<{"idGevent": Gevent}>(CodeSchema.paths.idGevent.path, GeventSchema.paths.scoreToWin.path)
-      .populate<{"idPlayer": User}>(CodeSchema.paths.idPlayer.path, UserSchema.paths.username.path);
-    
+      //.populate<{"idPlayer": User}>(CodeSchema.paths.idPlayer.path, UserSchema.paths.username.path);
     if(!codeDb){
       res.error = {
         general: "Codice non trovato",
-        game: "Codice non trovato, il codice inserito può essere scaduto torna indietro e inseriscine un altro"
+        game: "Codice non trovato"
       }
     }else if(codeDb.idGevent === null){
       res.error = {
         general: "Evento non trovato o cancellato",
         game: "Evento non trovato o cancellato"
       }
-    }else if(codeDb.idPlayer === null){
+    }/*else if(codeDb.idPlayer === null){
       res.error = {
         general: "Utente non trovato",
       }
-    }else{
+    }*/else{
       let getCode: GetCodeDto = {
         code: codeDb.code,
         try: codeDb.try,
         maxTry: codeDb.maxTry,
-        player: codeDb?.idPlayer?.username ?? "",
+        player: /*codeDb?.idPlayer?.username ?? ""*/null,
         scoreToWin: codeDb.idGevent.scoreToWin
       }
       res.data = getCode

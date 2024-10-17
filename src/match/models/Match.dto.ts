@@ -11,7 +11,7 @@ export class CreateMatchDto {
 }
 
 export class CreateMatch extends CreateMatchDto {
-    idUser: mongoose.Types.ObjectId;
+    //idUser: mongoose.Types.ObjectId;
 }
 
 export class EndMatchDto {
