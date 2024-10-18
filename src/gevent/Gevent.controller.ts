@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, UseGuards} from '@nestjs/common';
 import { GeventService } from './Gevent.service';
-import { CreateGeventDto, CheckWinGEventDto } from './models/Gevent.dto';
+import { CreateGeventDto, CheckWinGEventDto, CheckFreeAccessDto } from './models/Gevent.dto';
 import { ResFetch } from './../models/Response.model';
 import { Gevent } from './models/Gevent.schema';
 import { Schema } from 'mongoose';
@@ -65,16 +65,13 @@ export class GeventController {
     return res
   }
 
-  // @Get(':idEvent/newcode')
-  // @UseGuards(JwtAuthGuard)
-  // async GenerateCode(@Param('idEvent') idEvent: Schema.Types.ObjectId) : Promise<ResFetch<string>> {
-  //   let res : ResFetch<string> = {};
-  //   let code = await this.eventService.GenerateCode(idEvent);
+  @Get(':idEvent/checkFA')
+  async CheckFreeAccess(@Param('idEvent') idEvent: Schema.Types.ObjectId) : Promise<ResFetch<CheckFreeAccessDto>> {
+    let res = await this.geventService.CheckFreeAccess(idEvent);
 
-  //   res.data = code;
-    
-  //   return res
-  // }
+    return res
+  }
+  
   @ApiParam({name: 'idGevent', type: "string" })
   @Post(':idGevent/checkWin')
   async CheckWin(@Param("idGevent") idGevent : Schema.Types.ObjectId , @Body() checkWin: CheckWinGEventDto) : Promise<ResFetch<boolean>> {
