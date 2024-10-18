@@ -3,7 +3,7 @@ import mongoose, { ObjectId, Schema } from "mongoose";
 
 export class CreateMatchDto {
     @ApiProperty({required: false})
-    idCode: mongoose.Types.ObjectId | undefined;
+    idCode: mongoose.Types.ObjectId | "FACODE";
     @ApiProperty({required: true})
     idGevent: mongoose.Types.ObjectId;
     @ApiProperty({required:false})

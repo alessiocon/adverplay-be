@@ -7,6 +7,7 @@ import { CodeService } from './../code/Code.service';
 import { ResFetch } from './../models/Response.model';
 import { GeventService } from './../gevent/Gevent.service';
 import { Gevent, GeventSchema } from './../gevent/models/Gevent.schema';
+import { Code } from './../../src/code/models/Code.schema';
 
 
 @Injectable()
@@ -23,20 +24,19 @@ export class MatchService {
 
   async Create(createMatch: CreateMatch) : Promise<ResFetch<string>>{
     let res : ResFetch<string> = {};
+    let code : ResFetch<Code>;
     let gameTry = createMatch.tryFA || 0;
     let gameMaxTry = 0;
-
-    console.log(createMatch)
 
     let gevent = await this._geventService.FindById(createMatch.idGevent);
     if(!gevent.data) {
       res.error = gevent.error;
       return res;
     }
+    gameMaxTry = gevent.data.maxTry;
 
-    let code = await this._codeService.FindById(createMatch.idCode);
-    
     if(!gevent.data.FA){
+      code = await this._codeService.FindById(createMatch.idCode as mongoose.Types.ObjectId)
       if(!code.data) {
         res.error = code.error;
         return res;
@@ -46,7 +46,6 @@ export class MatchService {
     }
     
 
-    
     if(gameMaxTry <= gameTry){
       res.error = {
         general: "hai superato i tentativi a disposizione",
