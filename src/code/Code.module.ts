@@ -4,7 +4,7 @@ import { CodeController } from './Code.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Code, CodeSchema } from './models/Code.schema';
 import { GeventModule } from './../gevent/Gevent.module';
-import { EmailModule } from 'src/email/email.module';
+import { EmailModule } from './../../src/email/email.module';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: Code.name, schema: CodeSchema }]),
