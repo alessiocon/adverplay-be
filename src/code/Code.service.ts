@@ -8,7 +8,7 @@ import { ResFetch } from './../models/Response.model';
 import { Gevent, GeventSchema} from './../gevent/models/Gevent.schema';
 import { JwtUserDto } from './../user/models/User.dto';
 import { User, UserSchema } from './../user/models/User.schema';
-import { EmailService } from './../../src/email/email.service';
+import { EmailService } from './../email/email.service';
 
 @Injectable()
 export class CodeService {
