@@ -1,5 +1,5 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { AddCodeResDto, CreateCodeReqDto, GetCodeDto } from "./models/Code.dto"
+import { AddCodeResDto, CreateCodeReqDto,CreateCodeReqFADto, GetCodeDto } from "./models/Code.dto"
 import { InjectModel } from '@nestjs/mongoose';
 import { Code, CodeSchema } from './models/Code.schema';
 import mongoose, { Model, ObjectId, Schema } from 'mongoose';
@@ -8,11 +8,13 @@ import { ResFetch } from './../models/Response.model';
 import { Gevent, GeventSchema} from './../gevent/models/Gevent.schema';
 import { JwtUserDto } from './../user/models/User.dto';
 import { User, UserSchema } from './../user/models/User.schema';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class CodeService {
   constructor(@InjectModel(Code.name) private _codeContext: Model<Code>,
-    @Inject(forwardRef(() => GeventService)) private _geventService: GeventService
+    @Inject(forwardRef(() => GeventService)) private _geventService: GeventService,
+    private _emailService : EmailService
   ) {}
   
   async Create(createCodeDto: CreateCodeReqDto) : Promise<ResFetch<string>>{
@@ -33,6 +35,62 @@ export class CodeService {
       res.error = {general: "Non puoi creare codici in questo evento"}
     }
     
+    return res;
+  }
+
+  async CreateInFA(createCodeDto: CreateCodeReqFADto) : Promise<ResFetch<boolean>>{
+    let res : ResFetch<boolean> = {};
+
+    let gevent = await this._geventService.FindById(createCodeDto.idGevent);
+    if(gevent.data?.FA){
+      //controlla se non esiste già
+      createCodeDto.creatorFA = createCodeDto.creatorFA.toLocaleLowerCase();
+      let codeExist = await this._codeContext.findOne({creatorFA: createCodeDto.creatorFA, idGevent: createCodeDto.idGevent });
+      if(!codeExist){
+        let  createCode = new this._codeContext({
+          code: this.GenerateCode(),
+          maxTry: gevent.data.maxTry,
+          ...createCodeDto
+        });
+        
+        await createCode.save();
+        let resEmail = await this._emailService.sendCodeFA(createCodeDto.creatorFA, createCode.code);
+
+        if( resEmail.error ){ res.error = resEmail.error}
+        else{ res.data = true; }
+        res.data = true;
+      }else{
+        if(codeExist.try === 0){
+          res.error = {
+            general: "il codice è già stato inviato, controlla nella posta personale",
+            game: "il codice è già stato inviato, controlla nella posta personale"
+          }
+
+        } else if (codeExist.try > 0 && codeExist.try < codeExist.maxTry){
+          res.error = {
+            general: "codice per quest'email già creato e in uso",
+            game: "il codice è già stato inviato per quest'email, controlla la posta personale"
+          }
+        } else if (codeExist.try >= codeExist.maxTry){
+
+          let diff = codeExist.createdAt.getTime()+1000*60*60*12 - new Date().getTime();
+          let ss = Math.floor(diff / 1000) % 60;
+          let mm = Math.floor(diff / 1000 / 60) % 60;
+          let hh = Math.floor(diff / 1000 / 60 / 60);
+          
+          let ssText = ss < 10 ? "0"+ss : ss;
+          let mmText = mm < 10 ? "0"+mm : mm;
+          let hhText = hh < 10 ? "0"+hh : hh;
+          
+          res.error = {
+            general: "codice per quest'email già creato e consumato",
+            game: `ritorna tra: ${hhText}:${mmText}:${ssText} per un nuovo codice`
+          }
+        }
+      }
+    }else{
+      res.error = {general: "Non puoi creare codici in questo evento"}
+    }
     return res;
   }
 

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { CodeService } from './Code.service';
-import { AddCodeResDto, CodeAssignDto, CreateCodeReqDto, GetCodeDto } from "./models/Code.dto"
+import { AddCodeResDto, CodeAssignDto, CreateCodeReqDto, CreateCodeReqFADto, GetCodeDto } from "./models/Code.dto"
 import { ResFetch } from './../models/Response.model';
 import { JwtAuthGuard } from './../auth/passport/jwt-auth.guard';
 import mongoose, { ObjectId, Schema } from 'mongoose';
@@ -14,7 +14,6 @@ import { JwtUserDto } from './../user/models/User.dto';
 export class CodeController {
   constructor(private readonly codeService: CodeService) {}
 
-
   @Post()
   @UseGuards(RolesGuard)
   @Roles([AuthRoleEnum.Restaurateur,AuthRoleEnum.Staff])
@@ -23,6 +22,12 @@ export class CodeController {
     createCodeDto.idCreator = req.user._id;
 
     return await this.codeService.Create(createCodeDto);
+  }
+
+  @Post("fa")
+  async CreateInFA(@Body() createCodeDto: CreateCodeReqFADto) : Promise<ResFetch<boolean>> {
+
+    return await this.codeService.CreateInFA(createCodeDto);
   }
 
   @Post("assign")
@@ -56,7 +61,6 @@ export class CodeController {
     
     return await this.codeService.CheckWin(IdCode, score);
   }
-
 
   @Delete(':id')
   async Remove(@Param('id') codeId: ObjectId) : Promise<ResFetch<boolean>> {

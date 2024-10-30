@@ -25,8 +25,12 @@ export class Code {
     idPlayer: mongoose.Types.ObjectId | null;
 
     //creator of code
-    @Prop({type: SchemaTypes.ObjectId, ref: User.name, required:true})
-    idCreator: ObjectId;
+    @Prop({type: SchemaTypes.ObjectId, ref: User.name, default:null})
+    idCreator: ObjectId | null;
+
+    //creator of code in FreeAccess mode
+    @Prop({default: null})
+    creatorFA: string | null;
 
     @Prop({default: Date.now()})
     createdAt: Date;

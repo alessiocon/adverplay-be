@@ -3,11 +3,9 @@ import mongoose, { ObjectId, Schema } from "mongoose";
 
 export class CreateMatchDto {
     @ApiProperty({required: false})
-    idCode: mongoose.Types.ObjectId | "FACODE";
+    idCode: mongoose.Types.ObjectId;
     @ApiProperty({required: true})
     idGevent: mongoose.Types.ObjectId;
-    @ApiProperty({required:false})
-    tryFA: number | undefined
 }
 
 export class CreateMatch extends CreateMatchDto {

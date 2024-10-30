@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer';
 import SMTPTransport, { MailOptions } from "nodemailer/lib/smtp-transport";
 import { Email } from './models/Email.schema';
 import { Model, mongo, Types} from 'mongoose';
-import { EmailChangeData, EmailConfirmData, EmailTypeEnum, EmailData } from './models/EmailModels';
+import { EmailChangeData, EmailConfirmData, EmailTypeEnum } from './models/EmailModels';
 import { ResFetch } from './../models/Response.model';
 const nodemail = require("nodemailer");
 
@@ -134,6 +134,17 @@ export class EmailService{
             subject: "Richiesta cambio password", // Subject line
             html: `<h1>Richiesta cambio password</h1><p>abbiamo ricevuto una richiesta di cambio password, <a title="cambia password" 
                 href="${this.#protocol}://${process.env.NODEMAILER_HOST_CLIENT}service/user/recoverypassword/${email._id.toString()}">clicca qui per cambiare password</a></p>`, // html body
+        }
+        return await this.#sendMailObj(mailObj)
+    }
+
+    async sendCodeFA(to : string, code: string) : Promise<ResFetch<boolean>>{
+
+        let mailObj = {
+            from: `"${process.env.NODEMAILER_USERNAME}" <${process.env.NODEMAILER_USERNAME}>`, // sender address
+            to: `${to}`, //list of receivers 
+            subject: "Richiesta codice di partecipazione", // Subject line
+            html: `<h1>Richiesta codice di partecipazione</h1><p>ciao player questo è il codice che ti permettera di poter vincere fantastici premi</p><p style="text-align: center;font-size: 2rem;padding: 15px;border: 1px solid black">${code}</p>`, // html body
         }
         return await this.#sendMailObj(mailObj)
     }

@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Length , Max, Min} from "class-validator";
+import { Length , Max, Min, IsEmail} from "class-validator";
 import mongoose, { ObjectId, Schema } from "mongoose";
 import { ConstraintEnum } from "./../../models/ConstraintEnum.model";
 
@@ -12,6 +12,12 @@ export class CreateCodeReqDto {
 
     @ApiProperty({required:false})
     idCreator: ObjectId;
+}
+
+export class CreateCodeReqFADto{
+    @IsEmail({},{message: ConstraintEnum.IsEmail})
+    creatorFA: string;
+    idGevent: mongoose.Types.ObjectId;
 }
 
 export class AddCodeResDto {

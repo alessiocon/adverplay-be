@@ -25,28 +25,21 @@ export class MatchService {
   async Create(createMatch: CreateMatch) : Promise<ResFetch<string>>{
     let res : ResFetch<string> = {};
     let code : ResFetch<Code>;
-    let gameTry = createMatch.tryFA || 0;
-    let gameMaxTry = 0;
 
     let gevent = await this._geventService.FindById(createMatch.idGevent);
     if(!gevent.data) {
       res.error = gevent.error;
       return res;
     }
-    gameMaxTry = gevent.data.maxTry;
 
-    if(!gevent.data.FA){
-      code = await this._codeService.FindById(createMatch.idCode as mongoose.Types.ObjectId)
-      if(!code.data) {
-        res.error = code.error;
-        return res;
-      }
-      gameTry = code.data.try;
-      gameMaxTry = code.data.maxTry;
+    code = await this._codeService.FindById(createMatch.idCode as mongoose.Types.ObjectId)
+    if(!code.data) {
+      res.error = code.error;
+      return res;
     }
     
 
-    if(gameMaxTry <= gameTry){
+    if(code.data.maxTry <= code.data.try){
       res.error = {
         general: "hai superato i tentativi a disposizione",
         game: "hai utilizzato tutti le vite, per continuare cambia codice"
@@ -54,14 +47,10 @@ export class MatchService {
       return res
     }
 
- 
-    gameTry += 1;
+    code.data.try += 1;
     gevent.data.runGame += 1;
 
-    if(!gevent.data.FA){ 
-      code.data.try = gameTry;
-      await this._codeService.Update(code.data);
-    }
+    await this._codeService.Update(code.data);
     await this._geventService.Update(gevent.data);
 
     /*dato che l'utente non avrà l'accesso , il sistema match è sospeso*/
