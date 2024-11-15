@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
-import { CheckFreeAccessDto, CreateGeventDto } from './models/Gevent.dto';
+import { CheckFreeAccessDto, CreateGeventDto, SetWinner, WinnerDto } from './models/Gevent.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Gevent } from './models/Gevent.schema';
 import mongoose, { Model, ObjectId, Schema } from 'mongoose';
@@ -103,6 +103,79 @@ export class GeventService {
     return res;
   } 
 
+  async CheckWinner(id : Schema.Types.ObjectId, code: string) : Promise<ResFetch<boolean>> {
+    let res : ResFetch<boolean> = {data: false};
+
+    res.data = (await this._geventContext.find({_id: id ,winner:{$elemMatch: {code}}}).select("_id winner")).length !== 0;
+    
+    return res;
+  } 
+
+  async AddWinner(id : Schema.Types.ObjectId, code: string, score: number) : Promise<ResFetch<boolean>> {
+    let res : ResFetch<boolean> = {data: false};
+
+    let geventDb = await this._geventContext.findById(id).select("_id winner scoreToWin");
+    if(!geventDb){
+      throw new BadRequestException("Event not found");
+    }
+
+    let codeDb = await this._codeContext.findOne({code}).select("code creatorFA");
+    if(!code){
+      throw new BadRequestException("Code not found");
+    }
+    
+    if(geventDb.scoreToWin <= score){
+      //insert winner
+      geventDb.winner.push({email:codeDb.creatorFA , code: codeDb.code, withdrawn:false});
+      await geventDb.save();
+      res.data = true;
+    }
+
+    return res;
+  } 
+
+  async FindWinner(id : Schema.Types.ObjectId, code: string, email: string) : Promise<ResFetch<WinnerDto>> {
+    let res : ResFetch<WinnerDto> = {};
+
+    let geventDb = await this._geventContext.findById(id).select("_id winner");
+    if(!geventDb){
+      throw new BadRequestException("Event not found");
+    }
+
+    let winner = geventDb.winner.find(x => x.code === code && x.email.toLocaleLowerCase() === email.toLocaleLowerCase());
+    if(winner){
+      res.data = winner;
+    }else{
+      res.error = {
+        general:"vincita non trovata"
+      }
+    }
+    
+    return res;
+  } 
+
+
+  async SetWinner(id : Schema.Types.ObjectId, winner: SetWinner) : Promise<ResFetch<boolean>> {
+    let res : ResFetch<boolean> = {data: true};
+    let updateWinner = await this._geventContext.updateOne(
+      {
+        _id: id,
+        staff: [winner.idStaff],
+        winner: { $elemMatch: { code: winner.code, email: winner.email.toLocaleLowerCase() } }
+      },
+      { $set: { "winner.$.withdrawn" : winner.withdrawn} }
+    )
+
+    if(updateWinner.matchedCount === 0){
+        res = {
+          data: false,
+          error:{
+            general:"vincita non trovata"
+          }
+        }
+    }
+    return res;
+  } 
 /*
   findOne(id: number) {
     return `This action returns a #${id} event`;

@@ -11,6 +11,28 @@ export class CheckWinGEventDto {
 }
 
 
+export class SetWinnerDto {
+    @ApiProperty()
+    code: string;
+    @ApiProperty()
+    email: string;
+    @ApiProperty()
+    withdrawn: boolean
+}
+
+export class SetWinner extends SetWinnerDto{
+    idStaff: Schema.Types.ObjectId
+}
+
+export class WinnerDto {
+    @ApiProperty()
+    code: string;
+    @ApiProperty()
+    email: string;
+    @ApiProperty()
+    withdrawn: boolean;
+}
+
 export class CreateGeventDto {
     @ApiProperty({default:"evento prova"})
     name: string;

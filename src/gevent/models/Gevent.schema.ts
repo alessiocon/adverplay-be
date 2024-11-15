@@ -4,6 +4,17 @@ import { User } from './../../user/models/User.schema';
 
 export type GeventDocument = HydratedDocument<Gevent>;
 
+
+class Winner{
+    @Prop({unique:true})
+    email: string;
+    @Prop({unique:true})
+    code: string;
+    @Prop({default:false})
+    withdrawn: boolean
+}
+
+
 @Schema()
 export class Gevent {
     _id: ObjectId;
@@ -43,6 +54,8 @@ export class Gevent {
     @Prop({type: [SchemaTypes.ObjectId], default: [], ref: User.name})
     master:  ObjectId[];
 
+    @Prop({type: [Winner], default: []})
+    winner:  Winner[];
 
     //capire sé è utile includerla
     // @Prop({type: [SchemaTypes.ObjectId], default: [], ref: Code.name})

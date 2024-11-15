@@ -1,6 +1,6 @@
 import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { MatchService } from './Match.service';
-import { CreateMatch, CreateMatchDto, EndMatch, EndMatchDto, EndMatchRes } from './models/Match.dto';
+import { CreateMatch, CreateMatchDto, EndMatch, EndMatchDto, EndMatchRes,EndMatchFreeAccessDto } from './models/Match.dto';
 import { JwtAuthGuard } from './../auth/passport/jwt-auth.guard';
 import { ResFetch } from './../models/Response.model';
 
@@ -22,6 +22,12 @@ export class MatchController {
     var endMatch : EndMatch = {...endMatchDto, idUser: req.user._id}
 
     return this.matchService.EndMatch(endMatch);
+  }
+
+  @Post("end/freeAccess")
+  endMatchFreeAccess(@Body() endMatchDto: EndMatchFreeAccessDto, @Req() req) : Promise<ResFetch<EndMatchRes>>{
+
+    return this.matchService.EndMatchFreeAccess(endMatchDto);
   }
 
   // @Get()

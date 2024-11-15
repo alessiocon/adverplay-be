@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Param, UseGuards} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Req} from '@nestjs/common';
 import { GeventService } from './Gevent.service';
-import { CreateGeventDto, CheckWinGEventDto, CheckFreeAccessDto } from './models/Gevent.dto';
+import { CreateGeventDto, CheckWinGEventDto, CheckFreeAccessDto, WinnerDto, SetWinnerDto } from './models/Gevent.dto';
 import { ResFetch } from './../models/Response.model';
 import { Gevent } from './models/Gevent.schema';
 import { Schema } from 'mongoose';
@@ -77,6 +77,25 @@ export class GeventController {
   async CheckWin(@Param("idGevent") idGevent : Schema.Types.ObjectId , @Body() checkWin: CheckWinGEventDto) : Promise<ResFetch<boolean>> {
 
     let res : ResFetch<boolean> = await this.geventService.CheckWin(idGevent, checkWin.code, checkWin.score);;
+    return res;
+  }
+
+  @ApiParam({name: 'idGevent', type: "string" })
+  @Get(':idGevent/findwinner/:code/:email')
+  async findwinner(@Param("idGevent") idGevent : Schema.Types.ObjectId , @Param("code") code: string, @Param("email") email:string) : Promise<ResFetch<WinnerDto>> {
+
+    let res : ResFetch<WinnerDto> = await this.geventService.FindWinner(idGevent, code, email);
+    return res;
+  }
+
+  @ApiParam({name: 'idGevent', type: "string" })
+  @Post(':idGevent/setwinner')
+  @Roles([AuthRoleEnum.Admin, AuthRoleEnum.Restaurateur, AuthRoleEnum.Staff])
+  @UseGuards(JwtAuthGuard)
+  async SetWinner(@Req() req,@Param("idGevent") idGevent : Schema.Types.ObjectId , @Body() setWinnerDto: SetWinnerDto) : Promise<ResFetch<boolean>> {
+    let setWinner = {...setWinnerDto, idStaff: req.user._id}
+
+    let res : ResFetch<boolean> = await this.geventService.SetWinner(idGevent, setWinner);
     return res;
   }
 

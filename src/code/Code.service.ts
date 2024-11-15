@@ -42,7 +42,18 @@ export class CodeService {
     let res : ResFetch<boolean> = {};
 
     let gevent = await this._geventService.FindById(createCodeDto.idGevent);
+    
     if(gevent.data?.FA){
+      //Check if the player has already won
+      let winner = gevent.data.winner.find(x => x.email === createCodeDto.creatorFA )
+      if(winner){
+        res.error = {
+          general: "Quest'email è già associata ad una vincita, puoi ritirare il tuo premio",
+          game: "Quest'email è già associata ad una vincita, puoi ritirare il tuo premio"
+        }
+        return res
+      }
+
       //controlla se non esiste già
       createCodeDto.creatorFA = createCodeDto.creatorFA.toLocaleLowerCase();
       let codeExist = await this._codeContext.findOne({creatorFA: createCodeDto.creatorFA, idGevent: createCodeDto.idGevent });

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMatch, EndMatch, EndMatchRes } from './models/Match.dto';
+import { CreateMatch, EndMatch, EndMatchFreeAccessDto, EndMatchRes } from './models/Match.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Match, MatchSchema } from './models/Match.schema';
 import mongoose, { Model, Mongoose } from 'mongoose';
@@ -91,6 +91,24 @@ export class MatchService {
     res.data = {
       hasWin: matchDb.score >= matchDb.idGevent.scoreToWin
     };
+    
+    return res;
+  }
+
+  async EndMatchFreeAccess(endMatch: EndMatchFreeAccessDto) : Promise<ResFetch<EndMatchRes>>{
+    let res : ResFetch<EndMatchRes> = {};
+    let checkWinner = await this._geventService.CheckWinner(endMatch.idGevent, endMatch.code);
+
+    //insert winner
+    if(!checkWinner.data){
+      let response = await this._geventService.AddWinner(endMatch.idGevent, endMatch.code, endMatch.score);
+      res.data = {hasWin: response.data} 
+    }else{
+      res.error={
+        general:"codice già associato ad una vincita",
+        game:"codice già associato ad una vincita"
+      }
+    }
     
     return res;
   }

@@ -19,6 +19,15 @@ export class EndMatchDto {
     score: number;
 }
 
+export class EndMatchFreeAccessDto {
+    @ApiProperty({required: true})
+    code: string;
+    @ApiProperty({required: true})
+    score: number;
+    @ApiProperty({required: true})
+    idGevent: Schema.Types.ObjectId;
+}
+
 export class EndMatch extends EndMatchDto {
     idUser: mongoose.Types.ObjectId;
 }
