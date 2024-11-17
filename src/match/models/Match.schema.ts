@@ -16,7 +16,7 @@ export class Match {
     @Prop({required: true})
     codeTry: number;
 
-    @Prop({default: Date.now()})
+    @Prop({default: Date.now})
     createdAt: Number
 
     @Prop({default: null})

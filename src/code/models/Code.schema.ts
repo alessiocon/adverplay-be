@@ -32,7 +32,7 @@ export class Code {
     @Prop({default: null})
     creatorFA: string | null;
 
-    @Prop({default: Date.now()})
+    @Prop({default: Date.now})
     createdAt: Date;
  
 }
