@@ -116,7 +116,7 @@ export class MatchService {
 
   // findAll() {
   //   return `This action returns 
-  all match`;
+  //all match`;
   // }
 
   // findOne(id: number) {
