@@ -95,27 +95,28 @@ export class MatchService {
     return res;
   }
 
-  async EndMatchFreeAccess(endMatch: EndMatchFreeAccessDto) : Promise<ResFetch<EndMatchRes>>{
-    let res : ResFetch<EndMatchRes> = {};
-    let checkWinner = await this._geventService.CheckWinner(endMatch.idGevent, endMatch.code);
+  // async EndMatchFreeAccess(endMatch: EndMatchFreeAccessDto) : Promise<ResFetch<EndMatchRes>>{
+  //   let res : ResFetch<EndMatchRes> = {};
+  //   let checkWinner = await this._geventService.CheckWinner(endMatch.idGevent, endMatch.code);
 
-    //insert winner
-    if(!checkWinner.data){
-      let response = await this._geventService.AddWinner(endMatch.idGevent, endMatch.code, endMatch.score);
-      res.data = {hasWin: response.data} 
-    }else{
-      res.error={
-        general:"codice già associato ad una vincita",
-        game:"codice già associato ad una vincita"
-      }
-    }
+  //   //insert winner
+  //   if(!checkWinner.data){
+  //     let response = await this._geventService.AddWinner(endMatch.idGevent, endMatch.code, endMatch.score);
+  //     res.data = {hasWin: response.data} 
+  //   }else{
+  //     res.error={
+  //       general:"codice già associato ad una vincita",
+  //       game:"codice già associato ad una vincita"
+  //     }
+  //   }
     
-    return res;
-  }
+  //   return res;
+  // }
   
 
   // findAll() {
-  //   return `This action returns all match`;
+  //   return `This action returns 
+  all match`;
   // }
 
   // findOne(id: number) {

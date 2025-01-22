@@ -24,11 +24,11 @@ export class MatchController {
     return this.matchService.EndMatch(endMatch);
   }
 
-  @Post("end/freeAccess")
-  endMatchFreeAccess(@Body() endMatchDto: EndMatchFreeAccessDto, @Req() req) : Promise<ResFetch<EndMatchRes>>{
+  // @Post("end/freeAccess")
+  // endMatchFreeAccess(@Body() endMatchDto: EndMatchFreeAccessDto, @Req() req) : Promise<ResFetch<EndMatchRes>>{
 
-    return this.matchService.EndMatchFreeAccess(endMatchDto);
-  }
+  //   return this.matchService.EndMatchFreeAccess(endMatchDto);
+  // }
 
   // @Get()
   // findAll() {

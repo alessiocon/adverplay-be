@@ -10,8 +10,10 @@ class Winner{
     email: string;
     @Prop({unique:true})
     code: string;
-    @Prop({default:false})
-    withdrawn: boolean
+    @Prop({required:false})
+    name: string | null
+    @Prop({required:false})
+    surname: string | null
 }
 
 
@@ -53,7 +55,8 @@ export class Gevent {
 
     @Prop({type: [SchemaTypes.ObjectId], default: [], ref: User.name})
     master:  ObjectId[];
-
+    
+    //capire sé può servire o meno
     @Prop({type: [Winner], default: []})
     winner:  Winner[];
 
