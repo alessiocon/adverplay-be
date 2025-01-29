@@ -15,6 +15,70 @@ export class Aword {
     weight:number;
 }
 
+export class WheelBSProp{
+    @Prop()
+    width: number;
+    @Prop()
+    color:string
+}
+
+export class CPage {
+    @Prop()
+    bg: string;
+    @Prop()
+    text: string;
+    @Prop()
+    btnBg: string;
+    @Prop()
+    btnT: string;
+    @Prop()
+    btnB: string;
+
+    @Prop()
+    inputBg: string;
+    @Prop()
+    inputT: string;
+    @Prop()
+    inputB: string;
+    @Prop()
+    labelT: string;
+    @Prop()
+    listHBg: string;
+    @Prop()
+    listFBg: string;
+    @Prop()
+    listSBg: string;
+    @Prop()
+    listHT: string;
+    @Prop()
+    listFT: string;
+    @Prop()
+    listST: string;
+
+    @Prop({type: [String], default: []})
+    wheelBg: string[];
+    @Prop({type: [String], default: []})
+    wheelTC: string[];
+    @Prop()
+    wheelFF: string;
+    @Prop()
+    wheelFS: number;
+    @Prop()
+    wheelOBW: number;
+    @Prop()
+    wheelOBC: string;
+    @Prop()
+    wheelRLW: number;
+    @Prop()
+    wheelRLC: string;
+    @Prop()
+    wheelSpeen: number;
+    @Prop({type: [Aword], default: []})
+    wheelBS: {width: number, color:string}
+    @Prop()
+    wheelImgWhite: boolean;
+}
+
 
 @Schema()
 export class WheelEvent {
@@ -43,6 +107,9 @@ export class WheelEvent {
     
     @Prop({type: [Aword], default: []})
     awards:  Aword[];
+
+    @Prop({type: CPage , default: {}})
+    cPage: CPage
 }
 
 export const WheelEventSchema = SchemaFactory.createForClass(WheelEvent);
