@@ -7,7 +7,7 @@ export class AuthLocalLoginDto {
     @IsEmail({},{message: ConstraintEnum.IsEmail})
     email: string;
 
-    @ApiProperty({default:"password"})
+    @ApiProperty({default:"Password1!"})
     pass: string;
 }
 

@@ -2,6 +2,7 @@ import { Prop, Schema , SchemaFactory} from '@nestjs/mongoose';
 import { HydratedDocument, ObjectId, SchemaTypes } from 'mongoose';
 
 import { User } from './../../user/models/User.schema';
+import { WheelCode } from './../../wheelCode/models/WheelCode.schema';
 
 export type WheelEventDocument = HydratedDocument<WheelEvent>;
 
@@ -107,6 +108,9 @@ export class WheelEvent {
     
     @Prop({type: [Aword], default: []})
     awards:  Aword[];
+
+    @Prop({type: [SchemaTypes.ObjectId], default: [], ref: WheelCode.name})
+    idCodes:  ObjectId[];
 
     @Prop({type: CPage , default: {}})
     cPage: CPage

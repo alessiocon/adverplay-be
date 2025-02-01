@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, UseGuards} from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 import { WheelEventService } from './WheelEvent.service';
-import { CreateWheelEventDto} from './models/WheelEvent.dto';
+import { CreateWheelEventDto, GetWheelEventDto} from './models/WheelEvent.dto';
 import { ResFetch } from './../models/Response.model';
 import { WheelEvent } from './models/WheelEvent.schema';
 import { JwtAuthGuard } from './../auth/passport/jwt-auth.guard';
@@ -39,10 +39,10 @@ export class WheelEventController {
   }
 
   @Get(':name')
-  async FindByName(@Param('name') name: string) : Promise<ResFetch<WheelEvent>> {
+  async FindByName(@Param('name') name: string) : Promise<ResFetch<GetWheelEventDto>> {
     const event = await this.wheelEventService.FindByName(name);
     
-    let res : ResFetch<WheelEvent> = {};
+    let res : ResFetch<GetWheelEventDto> = {};
 
     if(!event){
       res.error = {general: 'l\'evento selezionato non esiste'};
@@ -52,13 +52,4 @@ export class WheelEventController {
     return  res;
 
   }
-
-  // @ApiParam({name: 'idWheelEvent', type: "string" })
-  // @Post(':idWheelEvent/checkWin')
-  // async CheckWin(@Param("idWheelEvent") idWheelEvent : Schema.Types.ObjectId , @Body() checkWin: CheckWinWheelEventDto) : Promise<ResFetch<boolean>> {
-
-  //   let res : ResFetch<boolean> = await this.wheelEventService.CheckWin(idWheelEvent, checkWin.code, checkWin.award);;
-  //   return res;
-  // }
-
 }

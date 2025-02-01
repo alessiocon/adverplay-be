@@ -1,19 +1,30 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Length } from "class-validator";
-import { ObjectId, Schema } from "mongoose";
+import { Schema } from "mongoose";
 
 import { ConstraintEnum } from "./../../models/ConstraintEnum.model";
 
 export class CreateWheelCodeReqDto {
-
+    
+    @ApiProperty({required:true})
     idWheelEvent: Schema.Types.ObjectId;
+    idCreator: Schema.Types.ObjectId;
+}
 
-    @ApiProperty({required:false})
-    idCreator: ObjectId;
+export class DeleteWheelCodeReqDto {
+    @ApiProperty({required:true})
+    idWheelEvent: Schema.Types.ObjectId;
+    idCreator: Schema.Types.ObjectId;
 }
 
 export class UseWheelCodeDto {
     award: string 
+}
+
+export class CheckWheelCode {
+    _id: Schema.Types.ObjectId;;
+    code: string;
+    award: string;
 }
 
 export class WheelCodeAssignDto {

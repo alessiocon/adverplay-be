@@ -1,7 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { PartialType } from '@nestjs/mapped-types';
+import { ObjectId} from 'mongoose'
 
 import { Aword, CPage } from "./WheelEvent.schema";
+import { CheckWheelCode } from "./../../wheelCode/models/WheelCode.dto";
 
 const cPageDefault : CPage = {
     bg: "#f7f7f8",
@@ -54,3 +56,27 @@ export class CreateWheelEventDto {
 }
 
 export class UpdateWheelEventDto extends PartialType(CreateWheelEventDto) {}
+
+export class GetWheelEventDto{
+    _id: ObjectId;
+    
+    name: string;
+
+    description: string;
+
+    end: Date|null;
+
+    runGame: number;
+
+    runMax: number;
+
+    staff:  ObjectId[];
+
+    master:  ObjectId[];
+    
+    awards:  Aword[];
+
+    codes:  CheckWheelCode[];
+
+    cPage: CPage
+}

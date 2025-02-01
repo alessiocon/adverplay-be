@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, Schema } from 'mongoose';
 
 import { WheelCode, WheelCodeSchema } from './models/WheelCode.schema';
-import { CreateWheelCodeReqDto, UseWheelCodeDto } from "./models/WheelCode.dto"
+import { CreateWheelCodeReqDto, DeleteWheelCodeReqDto, UseWheelCodeDto } from "./models/WheelCode.dto"
 import { WheelEventService } from './../wheelEvent/WheelEvent.service';
 import { ResFetch } from './../models/Response.model';
 import { WheelEvent, WheelEventSchema } from './../wheelEvent/models/WheelEvent.schema';
@@ -65,7 +65,11 @@ export class WheelCodeService {
 
     let wheelCodeDb = await  this._wheelCodeContext.findOne( {code: wheelCode})
       .populate<{"idWheelEvent": WheelEvent}>(WheelCodeSchema.paths.idWheelEvent.path, 
-        `${WheelEventSchema.paths.awards.path} ${WheelEventSchema.paths.runGame.path} ${WheelEventSchema.paths.runMax.path}`)
+        `${WheelEventSchema.paths.awards.path} 
+        ${WheelEventSchema.paths.runGame.path} 
+        ${WheelEventSchema.paths.runMax.path}
+        ${WheelEventSchema.paths.idCodes.path}`
+      )
 
 
     if(!wheelCodeDb){
@@ -76,17 +80,19 @@ export class WheelCodeService {
     }else if(wheelCodeDb.idWheelEvent === null){
       res.error = {
         general: "Evento non trovato o cancellato",
-        game: "Evento non trovato o cancellato"
       }
     }else if(wheelCodeDb.idWheelEvent.awards.length === 0){
       res.error = {
         general: "Non ci sono premi in palio",
-        game: "Non ci sono premi in palio"
       }
     }else if(wheelCodeDb.idWheelEvent.runGame >= wheelCodeDb.idWheelEvent.runMax){
       res.error = {
         general: "Questo evento è terminato",
         game: "Questo evento è terminato"
+      }
+    }else if(wheelCodeDb.award !== null){
+      res.error = {
+        general: "Codice già utilizzato",
       }
     }
 
@@ -131,8 +137,16 @@ export class WheelCodeService {
     
     //save
     wheelCodeDb.idWheelEvent.runGame += 1;
+
+    if(awardWin !== "riprova"){
+      wheelCodeDb.idWheelEvent.idCodes.push(wheelCodeDb._id);
+      wheelCodeDb.award = awardWin;
+      await wheelCodeDb.save();
+    }else{
+      await wheelCodeDb.deleteOne();
+    }
+
     await this._wheelEventService.Update(wheelCodeDb.idWheelEvent);
-    await wheelCodeDb.deleteOne();
     res.data = {award: awardWin};
     return res;
   }
@@ -146,8 +160,27 @@ export class WheelCodeService {
   }
 
   //NOTINUSE
-  async Remove(wheelCodeId: Schema.Types.ObjectId) : Promise<ResFetch<boolean>> {
+  async Remove(wheelCodeId: Schema.Types.ObjectId, deleteWheelCodeDto: DeleteWheelCodeReqDto) : Promise<ResFetch<boolean>> {
+    //trovare evento ed eliminare anche nei codes il codice riscattato
+    //capire se l'utente è autorizzato a cancellare il codice
     let res : ResFetch<boolean> = {data:true}
+    let eventDb = await this._wheelEventService.FindById(deleteWheelCodeDto.idWheelEvent)
+    if(!eventDb.data){
+      res.error = {
+        general: "Evento insesistente associato a questo codice",
+      }
+      return res;
+    }else if(!eventDb.data.staff.includes(deleteWheelCodeDto.idCreator) && eventDb.data.master.includes(deleteWheelCodeDto.idCreator)){
+      res.error = {
+        general: "Permesso negato per questo evento",
+      }
+      return res;
+    }
+
+    let indexCode = eventDb.data.idCodes.findIndex(code => code+"" === wheelCodeId+"");
+    eventDb.data.idCodes.splice(indexCode,1)
+    
+    await this._wheelEventService.Update(eventDb.data);
     await this._wheelCodeContext.findByIdAndDelete(wheelCodeId);
 
     return res;

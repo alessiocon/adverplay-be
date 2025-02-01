@@ -1,5 +1,5 @@
 import { Prop, Schema , SchemaFactory} from '@nestjs/mongoose';
-import mongoose, { HydratedDocument, ObjectId, SchemaTypes } from 'mongoose';
+import { HydratedDocument, ObjectId, SchemaTypes } from 'mongoose';
 import { User } from './../../user/models/User.schema';
 import { WheelEvent } from './../../wheelEvent/models/WheelEvent.schema';
 
@@ -15,11 +15,14 @@ export class WheelCode {
     @Prop({type: SchemaTypes.ObjectId, ref: WheelEvent?.name ?? "WheelEvent", default: null})
     idWheelEvent: ObjectId;
 
+    @Prop({default:null})
+    award: string|null;
+
     //creator of code
     @Prop({type: SchemaTypes.ObjectId, ref: User.name, default:null})
     idCreator: ObjectId | null;
 
-    @Prop({default: Date.now()})
+    @Prop({default: Date.now})
     createdAt: Date;
 }
 
