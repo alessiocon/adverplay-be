@@ -25,8 +25,8 @@ export class WheelEventService {
     return events;
   }
 
-  async FindByName(name: string) : Promise<GetWheelEventDto> {
-    let  wheelEventDb = await this._wheelEventContext.findOne({name: `${name}`})
+  async FindBySlug(slug: string) : Promise<GetWheelEventDto> {
+    let  wheelEventDb = await this._wheelEventContext.findOne({slug: slug})
       .populate<{"idCodes": WheelCode[]}>(WheelEventSchema.paths.idCodes.path, 
         `${WheelCodeSchema.paths.code.path} 
           ${WheelCodeSchema.paths.award.path}`
@@ -36,6 +36,7 @@ export class WheelEventService {
       _id: wheelEventDb._id,
       name: wheelEventDb.name,
       description: wheelEventDb.description,
+      slug: wheelEventDb.slug,
       end: wheelEventDb.end,
       runGame: wheelEventDb.runGame,
       runMax: wheelEventDb.runMax,

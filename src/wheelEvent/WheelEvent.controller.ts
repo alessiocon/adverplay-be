@@ -38,9 +38,9 @@ export class WheelEventController {
     return res
   }
 
-  @Get(':name')
-  async FindByName(@Param('name') name: string) : Promise<ResFetch<GetWheelEventDto>> {
-    const event = await this.wheelEventService.FindByName(name);
+  @Get(':slug')
+  async FindBySlug(@Param('slug') slug: string) : Promise<ResFetch<GetWheelEventDto>> {
+    const event = await this.wheelEventService.FindBySlug(slug);
     
     let res : ResFetch<GetWheelEventDto> = {};
 

@@ -64,6 +64,8 @@ export class GetWheelEventDto{
 
     description: string;
 
+    slug: string;
+
     end: Date|null;
 
     runGame: number;

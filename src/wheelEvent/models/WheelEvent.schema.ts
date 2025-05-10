@@ -91,6 +91,9 @@ export class WheelEvent {
     @Prop({default:""})
     description: string;
 
+    @Prop({unique:true})
+    slug: string;
+
     @Prop({default: null})
     end: Date|null;
 
