@@ -26,4 +26,4 @@ export class WheelCode {
     createdAt: Date;
 }
 
-export const WheelCodeSchema = SchemaFactory.createForClass(WheelCode).index({createdAt: 1},{name: "expireAt", expireAfterSeconds: 60*60*12 /* 12 ore */})
+export const WheelCodeSchema = SchemaFactory.createForClass(WheelCode).index({createdAt: 1},{name: "expireAt", expireAfterSeconds: 60/* 12 ore */})

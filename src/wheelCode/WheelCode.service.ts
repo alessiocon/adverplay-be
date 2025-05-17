@@ -141,6 +141,7 @@ export class WheelCodeService {
     if(awardWin !== "riprova"){
       wheelCodeDb.idWheelEvent.idCodes.push(wheelCodeDb._id);
       wheelCodeDb.award = awardWin;
+      wheelCodeDb.createdAt = null;
       await wheelCodeDb.save();
     }else{
       await wheelCodeDb.deleteOne();
